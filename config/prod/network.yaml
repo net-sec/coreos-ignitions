@@ -1,0 +1,71 @@
+defaults:
+  domain: net-sec.local
+  dns:
+    - 8.8.8.8
+    - 8.8.4.4
+
+master-1:
+  vip:
+    - address: 10.20.10.20
+      network: serv
+  serv:
+    interface: enp3s0f0
+    address: 10.20.10.21
+    gateway: 10.20.10.1
+  mgmt: 
+    interface: enp3s0f1
+    address: 10.20.11.21
+    gateway: 10.20.11.1
+  sync:
+    interface: enp4s0f0
+    address: 10.20.12.21
+    gateway: 10.20.12.1
+
+master-2:
+  vip:
+    - address: 10.20.10.20
+      network: serv
+  serv:
+    interface: enp3s0f0
+    address: 10.20.10.22
+    gateway: 10.20.10.1
+  mgmt: 
+    interface: enp3s0f1
+    address: 10.20.11.22
+    gateway: 10.20.11.1
+  sync:
+    interface: enp4s0f0
+    address: 10.20.12.22
+    gateway: 10.20.12.1
+
+master-3:
+  vip:
+    - address: 10.20.10.20
+      network: serv
+  serv:
+    interface: enp3s0f0
+    address: 10.20.10.23
+    gateway: 10.20.10.1
+  mgmt: 
+    interface: enp3s0f1
+    address: 10.20.11.23
+    gateway: 10.20.11.1
+  sync:
+    interface: enp4s0f0
+    address: 10.20.12.23
+    gateway: 10.20.12.1
+
+
+agent-1:
+  serv:
+    interface: enp3s0f0
+    address: 10.20.10.41
+    gateway: 10.20.10.1
+  mgmt: 
+    interface: enp3s0f1
+    address: 10.20.11.41
+    gateway: 10.20.11.1
+  sync:
+    interface: enp4s0f0
+    address: 10.20.12.41
+    gateway: 10.20.12.1

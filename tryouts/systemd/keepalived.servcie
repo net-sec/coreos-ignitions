@@ -1,0 +1,33 @@
+# /etc/systemd/system/keepalived.service
+
+[Unit]
+Description=keepalived in a Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/opt/bin/keepalived stop
+ExecStartPre=/opt/bin/keepalived pull
+ExecStart=/opt/bin/keepalived start
+ExecStop=/opt/bin/keepalived stop
+
+[Install]
+WantedBy=multi-user.target
+
+
+[Unit]
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=/opt/bin/keepalived pull
+ExecStart=/opt/bin/keepalived start
+ExecStop=/opt/bin/keepalived stop
+#ExecStatus=/opt/bin/keepalived status
+
+[Install]
+WantedBy=multi-user.target

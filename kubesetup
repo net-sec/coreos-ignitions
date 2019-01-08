@@ -1,0 +1,100 @@
+
+
+vi /home/claudio/kubecfg/kubeadm-config.yaml
+
+		apiVersion: kubeadm.k8s.io/v1beta1
+		kind: ClusterConfiguration
+		kubernetesVersion: stable
+		apiServer:
+		  certSANs:
+		  - "10.20.1.50"
+		controlPlaneEndpoint: "10.20.1.50:6443"
+		networking:
+		  podSubnet: 192.168.0.0/16
+
+
+kubeadm init --config=/home/claudio/kubecfg/kubeadm-config.yaml
+		Your Kubernetes master has initialized successfully!
+
+		To start using your cluster, you need to run the following as a regular user:
+
+		  mkdir -p $HOME/.kube
+		  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+		  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+		You should now deploy a pod network to the cluster.
+		Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+		  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+		You can now join any number of machines by running the following on each node
+		as root:
+
+		  sudo kubeadm join 10.20.1.50:6443 --token 5n7wjh.x2xtc5djm5gv824d --discovery-token-ca-cert-hash sha256:af4ee5190eb07d2efb0385fbe2646c268df7d661f37b56078672c707295aa2d9 --experimental-control-plane
+
+
+
+
+
+
+
+
+USER=claudio # customizable
+FROM_PLANE="10.20.1.51"
+CONTROL_PLANE_IPS="10.20.1.52 10.20.1.53"
+
+sudo cp -R /etc/kubernetes /home/${USER}
+sudo chown -R ${USER}: /home/${USER}/kubernetes
+
+for host in ${CONTROL_PLANE_IPS}; do
+    scp /home/${USER}/kubernetes/pki/ca.crt "${USER}"@$host:
+    scp /home/${USER}/kubernetes/pki/ca.key "${USER}"@$host:
+    scp /home/${USER}/kubernetes/pki/sa.key "${USER}"@$host:
+    scp /home/${USER}/kubernetes/pki/sa.pub "${USER}"@$host:
+    scp /home/${USER}/kubernetes/pki/front-proxy-ca.crt "${USER}"@$host:
+    scp /home/${USER}/kubernetes/pki/front-proxy-ca.key "${USER}"@$host:
+    scp /home/${USER}/kubernetes/pki/etcd/ca.crt "${USER}"@$host:etcd-ca.crt
+    scp /home/${USER}/kubernetes/pki/etcd/ca.key "${USER}"@$host:etcd-ca.key
+    scp /home/${USER}/kubernetes/admin.conf "${USER}"@$host:
+done
+
+sudo mkdir -p /root/.kube
+sudo cp /etc/kubernetes/admin.conf /root/.kube/config
+
+sudo mkdir -p /home/${USER}/.kube
+sudo cp /etc/kubernetes/admin.conf /home/${USER}/.kube/config
+sudo chown -R ${USER}: /home/${USER}/.kube
+
+
+
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-legacy.yml
+kubectl get pod -n kube-system -w
+
+
+
+
+
+
+
+# on all other master nodes
+USER=claudio # customizable
+sudo mkdir -p /etc/kubernetes/pki/etcd
+sudo mv /home/${USER}/ca.crt /etc/kubernetes/pki/
+sudo mv /home/${USER}/ca.key /etc/kubernetes/pki/
+sudo mv /home/${USER}/sa.pub /etc/kubernetes/pki/
+sudo mv /home/${USER}/sa.key /etc/kubernetes/pki/
+sudo mv /home/${USER}/front-proxy-ca.crt /etc/kubernetes/pki/
+sudo mv /home/${USER}/front-proxy-ca.key /etc/kubernetes/pki/
+sudo mv /home/${USER}/etcd-ca.crt /etc/kubernetes/pki/etcd/ca.crt
+sudo mv /home/${USER}/etcd-ca.key /etc/kubernetes/pki/etcd/ca.key
+sudo mv /home/${USER}/admin.conf /etc/kubernetes/admin.conf
+sudo mkdir -p /root/.kube
+sudo cp /etc/kubernetes/admin.conf /root/.kube/config
+
+sudo mkdir -p /home/${USER}/.kube
+sudo cp /etc/kubernetes/admin.conf /home/${USER}/.kube/config
+sudo chown -R ${USER}: /home/${USER}/.kube
+
+
+
+sudo systemctl enable kubelet

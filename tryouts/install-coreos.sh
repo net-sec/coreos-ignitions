@@ -1,0 +1,1 @@
+sudo coreos-install -C stable -d /dev/sda -i ignition.json

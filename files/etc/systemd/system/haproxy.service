@@ -1,0 +1,25 @@
+[Unit]
+Description=Haproxy in a Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+User=claudio
+Group=claudio
+EnvironmentFile=/run/env
+ExecStartPre=-/usr/bin/docker pull walser/haproxy:latest
+ExecStartPre=-/usr/bin/docker kill haproxy
+ExecStartPre=-/usr/bin/docker rm haproxy
+ExecStart=/usr/bin/docker run \
+    -p 8080:8080 \
+    -p 6444:6443 \
+    -e LB_HOST=${HOSTNAME} \
+    --name haproxy \
+    walser/haproxy:latest
+ExecStop=/usr/bin/docker kill haproxy
+ExecStopPost=-/usr/bin/docker rm haproxy
+
+[Install]
+WantedBy=multi-user.target

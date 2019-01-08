@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# /opt/bin/keepalived
+
+FUNC=$1
+CONTAINERNAME='keepalived'
+IMAGE='arcts/keepalived'
+TAG='latest'
+INTERFACE='enp0s3'
+
+
+
+# declare -A IPS
+# declare -A IPS[10.20.1.51]
+# declare -A IPS[10.20.1.52]
+# declare -A IPS[10.20.1.53]
+# IPS['10.20.1.51'][0]='10.20.1.52'
+# IPS['10.20.1.51'][1]=10.20.1.53
+
+# IPS['10.20.1.52'][0]=10.20.1.51
+# IPS['10.20.1.52'][1]=10.20.1.53
+
+# IPS['10.20.1.53'][0]=10.20.1.51
+# IPS['10.20.1.53'][1]=10.20.1.52
+
+
+
+function getSrcIP {
+	local IP=$(ifconfig $INTERFACE  | grep 'inet ' | cut -d: -f2 | awk '{ print $2}')
+	local retval=$?
+	if [ "${retval}" -ne "0" ]
+	then
+		echo "Failed to get a valid ip address: ${retval}"
+		exit $retval
+	fi
+
+	echo $IP
+}
+
+SRC_IP=$(getSrcIP)
+
+
+function stop {
+	docker rm -f $CONTAINERNAME
+}
+
+function start {
+	docker run --net=host --cap-add NET_ADMIN \
+	--name=$CONTAINERNAME                        \
+	--restart=unless-stopped					 \
+	-e KEEPALIVED_AUTOCONF=true                  \
+	-e KEEPALIVED_STATE=MASTER                   \
+	-e KEEPALIVED_INTERFACE=$INTERFACE           \
+	-e KEEPALIVED_VIRTUAL_ROUTER_ID=1            \
+	-e KEEPALIVED_UNICAST_SRC_IP=$SRC_IP      \
+	-e KEEPALIVED_UNICAST_PEER_0=10.20.1.52      \
+	-e KEEPALIVED_UNICAST_PEER_1=10.20.1.53      \
+	-e KEEPALIVED_TRACK_INTERFACE_1=$INTERFACE   \
+	-e KEEPALIVED_VIRTUAL_IPADDRESS_1="10.20.1.50/24 dev ${INTERFACE}" \
+	$IMAGE
+}
+
+function pull {
+	docker image pull $IMAGE
+}
+
+function restart {
+	stop
+	start
+}
+
+
+function status {
+	docker ps --filter "name=${CONTAINERNAME}" | grep $CONTAINERNAME
+}
+
+
+case "$FUNC" in
+        start)
+            start
+            exit $?
+            ;;
+         
+        stop)
+            stop
+            exit $?
+            ;;
+         
+        status)
+            status
+            exit $?
+            ;;
+        restart)
+            stop
+            start
+            exit $?
+            ;;
+        pull)
+			pull
+			exit $?
+			;;
+        *)
+            echo $"Usage: $0 {start|stop|restart|status}"
+            exit 1
+            ;;
+ 
+esac
