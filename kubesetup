@@ -1,19 +1,21 @@
 
+# bootstrap on the first host
 
+mkdir -p /home/claudio/kubecfg/
 vi /home/claudio/kubecfg/kubeadm-config.yaml
 
-		apiVersion: kubeadm.k8s.io/v1beta1
-		kind: ClusterConfiguration
-		kubernetesVersion: stable
-		apiServer:
-		  certSANs:
-		  - "10.20.1.50"
-		controlPlaneEndpoint: "10.20.1.50:6443"
-		networking:
-		  podSubnet: 192.168.0.0/16
+	apiVersion: kubeadm.k8s.io/v1beta1
+	kind: ClusterConfiguration
+	kubernetesVersion: stable
+	apiServer:
+	  certSANs:
+	  - "10.20.1.50"
+	controlPlaneEndpoint: "10.20.1.50:6443"
+	networking:
+	  podSubnet: 192.168.0.0/16
 
 
-kubeadm init --config=/home/claudio/kubecfg/kubeadm-config.yaml
+sudo kubeadm init --config=/home/claudio/kubecfg/kubeadm-config.yaml
 		Your Kubernetes master has initialized successfully!
 
 		To start using your cluster, you need to run the following as a regular user:
@@ -29,6 +31,7 @@ kubeadm init --config=/home/claudio/kubecfg/kubeadm-config.yaml
 		You can now join any number of machines by running the following on each node
 		as root:
 
+		  # remember this command to join other masters
 		  sudo kubeadm join 10.20.1.50:6443 --token 5n7wjh.x2xtc5djm5gv824d --discovery-token-ca-cert-hash sha256:af4ee5190eb07d2efb0385fbe2646c268df7d661f37b56078672c707295aa2d9 --experimental-control-plane
 
 
