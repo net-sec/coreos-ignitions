@@ -1,0 +1,88 @@
+{
+  "ignition": {
+    "version": "2.2.0"
+  },
+  "networkd": {
+    "units": [
+      {
+        "contents": "[Match] \nName=enp0s8\n\n[Network]\nAddress=10.20.10.22/24\nGateway=10.20.10.1\nDNS=10.20.10.10 DNS=8.8.4.4 ",
+        "name": "00-serv.network"
+      },
+      {
+        "contents": "[Match] \nName=enp0s9\n\n[Network]\nAddress=10.20.11.22/24\nGateway=10.20.11.1\nDNS=10.20.10.10 DNS=8.8.4.4 ",
+        "name": "00-mgmt.network"
+      },
+      {
+        "contents": "[Match] \nName=enp0s10\n\n[Network]\nAddress=10.20.12.22/24\nGateway=10.20.12.1\nDNS=10.20.10.10 DNS=8.8.4.4 ",
+        "name": "00-sync.network"
+      }
+    ]
+  },
+  "passwd": {
+    "groups": [
+      {
+        "name": "ssh"
+      }
+    ],
+    "users": [
+      {
+        "groups": [
+          "sudo",
+          "docker",
+          "ssh"
+        ],
+        "name": "claudio",
+        "sshAuthorizedKeys": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyvOm1lNZQDREfzZyTrR3rFXlqOkcg/gm0qj0Bohi/KSBNrY3Lb2b/7XtAGc6kp4DOYwvyH0I6GxAkQP6heA72OYd3T0sSK/RcMFQHW0DAVTV6CiRhCUV4fKwS57hnZ02sEP3on7gaCD5Mf8gm+zwSoLa+jgZ2MMQrwIz+BcE2rXrMXuPF4QAn9SHSpKA+ja8V/o89Dt4J58awWe3MsccpEnnvkyGoNb82h+Xl96OrCO1Kw5fiuk0LbOs5iVEnxu6rDcU0KFphE4Ggep/BtVPjSwYQDn3fAZ0z3TAUOisi7o+2tY8dq8+AuuvgsUnwpaiUQHpDlxurK5ZQ0/YFzxlVqq1Dm2rk1tuum7xhjimc5HbC5Jq+f7cB9C5MfC7I+uVfjS7PILqY+JEvayTr7C8tYEqD0hF/mmnePLMvTdnL6E5dpkkLKw9DjL3PGpn1KSlspGfY3GRkjzdiMUtrDDym42EflqJn3zAGlm8ZlA2INmOmUgeNr1JJTK2AjycqYIB/GVgG/J6kqf9HaFijGwuSxlyGq3OajKNgtL/WYhpK1O88FXV3rYi03CeG1kdQ3okigibuY+OnKsviUGlOwD+9BHnMnM1exfIYkpflAWI9GxGgFpM7RFuA3Mbag3KeJ0pM7zz+KBPeuSgubVpgpvRe3sIQQ6EWt77kgYk6Ma7C7w== claudio@net-sec.local",
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDUNQfEB9pqy3yQ53sJEsczgFBYzP+Lvfrz/wlQ+4iR3yBce9s4ZO8I8GEFfaxbHAJEc5fAx0rhOd4QKC/XHF2KT+nBq/gGXQjvmxgVDzJU6lOLMQhV1WQNo4xaBmoN5VKSWWuB+Jv3ipF28WzhbBHQZ8BqCZEo9h+M4olmlN+XZnrcrXwU4ct9VPsy77yVI134HVJGiHLrlXUUvgJ0Bdh32C1RCYSgyo5zzgtxU24ldFiqSYSCqwJ+EQWE0ejnY1oNFU2A0KGtSrzmKfrus2xbxPfgAVZqJSJw5PId9DknsbAIW4Wv1xPG+UsbIboKn7anDffmHLYr6Qwal3DjW2nt/j9MsQhyzWw4rh+PKQFI/e9A3g8a0gTnV/4cpFIgeX8wWfomGKE0zXnZaIORLWCwz+z5fYtFT5d5JipNctnjEQObk1wX5sRroYfPGG012cCcY8nQN4WSUul/SCTrfC9EGozb4FwUc5IknL9OfOF5jYDeU15rQkeIdDRXQiwvmEl6vDwzgo3ZwBT5ha8uw2RP7Z3nE67zGCiO5QgBBLoU28fHeBbPPeB09yv9oX3d9gkxcYXdWjSsT9nUzTtcdMFfG29YAhnXkqPrzl2npaL8v3EbkDLmNA8bm7EKLHPJoJTMcqVN3HAtX5ACbaqQtAyNJbyxHTerOAQHeR6YdssirQ== claudio.walser@srf.ch"
+        ]
+      },
+      {
+        "groups": [
+          "sudo",
+          "docker"
+        ],
+        "name": "local-admin",
+        "passwordHash": "$6$jbwxN8UB$4op7Xz1BPV9SiSz8rkJJ6.zwgpWbe4/sqjs5duXy7e.3zUGh3MDyt11m62iFokkMMrFnYpWtlsJo1grf7XXfy."
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "contents": {
+          "source": "data:,master-2.net-sec.local"
+        },
+        "filesystem": "root",
+        "mode": 420,
+        "path": "/etc/hostname"
+      },
+      {
+        "contents": {
+          "source": "data:,HOSTNAME%3Dmaster-2%0AIP_SERV%3D10.20.10.22%0AIP_MGMT%3D10.20.11.22%0AIP_SYNC%3D10.20.12.22%0AKEEPALIVED_SRC%3D10.20.10.22%0AKEEPALIVED_VIP%3D10.20.10.20%0AKEEPALIVED_INTERFACE%3Denp0s8%0AKEEPALIVED_PEER_0%3D10.20.10.21%0AKEEPALIVED_PEER_1%3D10.20.10.23%0A"
+        },
+        "filesystem": "root",
+        "mode": 420,
+        "path": "/etc/env"
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "enable": true,
+        "name": "docker.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=keepalived in a Container\nAfter=haproxy.service\nRequires=haproxy.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker pull arcts/keepalived:latest\nExecStartPre=-/usr/bin/docker kill keepalived\nExecStartPre=-/usr/bin/docker rm keepalived\nExecStart=/usr/bin/docker run \t\t\t\t\t\\\n\t--net=host\t\t\t\t\t\t\t\t\t\\\n\t--cap-add NET_ADMIN \t\t\t\t\t\t\\\n\t-e KEEPALIVED_AUTOCONF=true\t\t\t\t\t\\\n\t-e KEEPALIVED_STATE=MASTER\t\t\t\t\t\\\n\t-e KEEPALIVED_INTERFACE=${KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_ROUTER_ID=1\t\t\t\\\n\t-e KEEPALIVED_UNICAST_SRC_IP=${KEEPALIVED_SRC}\\\n\t-e KEEPALIVED_UNICAST_PEER_0=${KEEPALIVED_PEER_0}\\\n\t-e KEEPALIVED_UNICAST_PEER_1=${KEEPALIVED_PEER_1}\\\n\t-e KEEPALIVED_TRACK_INTERFACE_1=${KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_IPADDRESS_1=\"${KEEPALIVED_VIP}/24 dev ${KEEPALIVED_INTERFACE}\" \\\n\t--name keepalived\t\t\t\t\t\t\t\\\n\tarcts/keepalived:latest\nExecStop=/usr/bin/docker kill keepalived\nExecStopPost=-/usr/bin/docker rm keepalived\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enable": true,
+        "name": "keepalived.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Haproxy in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker pull walser/haproxy:latest\nExecStartPre=-/usr/bin/docker kill haproxy\nExecStartPre=-/usr/bin/docker rm haproxy\nExecStart=/usr/bin/docker run \\\n    -p 8080:8080 \\\n    -p 6444:6443 \\\n    -e LB_HOST=${HOSTNAME} \\\n    --name haproxy \\\n    walser/haproxy:latest\nExecStop=/usr/bin/docker kill haproxy\nExecStopPost=-/usr/bin/docker rm haproxy\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enable": true,
+        "name": "haproxy.service"
+      }
+    ]
+  }
+}
