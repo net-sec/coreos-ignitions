@@ -5,6 +5,7 @@ import os
 import argparse
 import yaml
 import json
+import urllib.parse
 
 from pprint import pprint
 
@@ -56,18 +57,18 @@ class NetworkConfig(object):
 			print('Config for %s not found in network.yaml' % (hostname))
 			sys.exit(1)
 
-		envFile = 'HOSTNAME=%s\n' % (hostname)
-		envFile += 'IP_SERV=%s\n' % (self.config[hostname]['serv']['address'])
-		envFile += 'IP_MGMT=%s\n' % (self.config[hostname]['mgmt']['address'])
-		envFile += 'IP_SYNC=%s\n' % (self.config[hostname]['sync']['address'])
+		envFile = 'HOSTNAME%3D{}%0A'.format(hostname)
+		envFile += 'IP_SERV%3D{}%0A'.format(self.config[hostname]['serv']['address'])
+		envFile += 'IP_MGMT%3D{}%0A'.format(self.config[hostname]['mgmt']['address'])
+		envFile += 'IP_SYNC%3D{}%0A'.format(self.config[hostname]['sync']['address'])
 
 		if 'vip' in self.config[hostname]:
 
 			for myVip in self.config[hostname]['vip']:
 
-				envFile += 'KEEPALIVED_SRC=%s\n' % (self.config[hostname][myVip['network']]['address'])
-				envFile += 'KEEPALIVED_VIP=%s\n' % (myVip['address'])
-				envFile += 'KEEPALIVED_INTERFACE=%s\n' % (self.config[hostname][myVip['network']]['interface'])
+				envFile += 'KEEPALIVED_SRC%3D{}%0A'.format(self.config[hostname][myVip['network']]['address'])
+				envFile += 'KEEPALIVED_VIP%3D{}%0A'.format(myVip['address'])
+				envFile += 'KEEPALIVED_INTERFACE%3D{}%0A'.format(self.config[hostname][myVip['network']]['interface'])
 				
 				numPeer = 0
 				for network in self.config:
@@ -76,7 +77,7 @@ class NetworkConfig(object):
 							for foreignVip in self.config[network]['vip']:
 								if foreignVip['address'] == myVip['address']:
 									if self.config[network][foreignVip['network']]['address']:
-										envFile += 'KEEPALIVED_PEER_%s=%s\n' % (numPeer, self.config[network][foreignVip['network']]['address'])								
+										envFile += 'KEEPALIVED_PEER_{}%3D{}%0A'.format(numPeer, self.config[network][foreignVip['network']]['address'])								
 										numPeer += 1
 
 		return envFile
@@ -111,28 +112,12 @@ with open('%s/%s.yaml' % (confPath, args.hostname)) as stream:
 
 		node_config['storage']['files'].append({
 			'filesystem': 'root',
-			'path': '/run/env',
+			'path': '/etc/env',
 			'mode': 420,
 			'contents': {
-				'source': 'data:,%s.%s' % (args.hostname, network.getDomain(args.hostname))
+				'source': 'data:,%s' % (network.getEnvironment(args.hostname))
 			}
 		})
-
-# "files": [{
-# 	"filesystem": "root",
-# 	"path": "/foo/bar",
-# 	"mode": 420,
-# 	"contents": { "source": "data:,example%20file%0A" }
-# }
-
-		# node_config['storage']['files'].append({
-		# 	'filesystem': 'root',
-		# 	'path': '/run/env',
-		# 	'mode': 420,
-		# 	'contents': {
-		# 		'source': 'data:,%s' % (network.getEnvironment(args.hostname))
-		# 	}
-		# })
 
 		if 'networkd' not in node_config:
 			node_config['networkd'] = {}
