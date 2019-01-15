@@ -5,16 +5,16 @@
   "networkd": {
     "units": [
       {
-        "contents": "[Match] \nName=enp3s0f0\n\n[Network]\nAddress=10.20.10.21/24\nGateway=10.20.10.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
+        "contents": "[Match] \nName=enp3s0f0\n\n[Network]\nAddress=10.20.10.23/24\nGateway=10.20.10.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
         "name": "00-serv.network"
       },
       {
-        "contents": "[Match] \nName=enp3s0f1\n\n[Network]\nAddress=10.20.11.21/24\nGateway=10.20.11.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
-        "name": "00-mgmt.network"
+        "contents": "[Match] \nName=enp4s0f0\n\n[Network]\nAddress=10.20.12.23/24\nGateway=10.20.12.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
+        "name": "00-sync.network"
       },
       {
-        "contents": "[Match] \nName=enp4s0f0\n\n[Network]\nAddress=10.20.12.21/24\nGateway=10.20.12.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
-        "name": "00-sync.network"
+        "contents": "[Match] \nName=enp3s0f1\n\n[Network]\nAddress=10.20.11.23/24\nGateway=10.20.11.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
+        "name": "00-mgmt.network"
       }
     ]
   },
@@ -51,7 +51,7 @@
     "files": [
       {
         "contents": {
-          "source": "data:,master-1.net-sec.local"
+          "source": "data:,master-3.net-sec.local"
         },
         "filesystem": "root",
         "mode": 420,
@@ -59,7 +59,7 @@
       },
       {
         "contents": {
-          "source": "data:,HOSTNAME%3Dmaster-1%0AIP_SERV%3D10.20.10.21%0AIP_MGMT%3D10.20.11.21%0AIP_SYNC%3D10.20.12.21%0AKEEPALIVED_SRC%3D10.20.10.21%0AKEEPALIVED_VIP%3D10.20.10.20%0AKEEPALIVED_INTERFACE%3Denp3s0f0%0AKEEPALIVED_PEER_0%3D10.20.10.22%0AKEEPALIVED_PEER_1%3D10.20.10.23%0A"
+          "source": "data:,HOSTNAME%3Dmaster-3%0AIP_SERV%3D10.20.10.23%0AIP_MGMT%3D10.20.11.23%0AIP_SYNC%3D10.20.12.23%0AKEEPALIVED_SRC%3D10.20.10.23%0AKEEPALIVED_VIP%3D10.20.10.20%0AKEEPALIVED_INTERFACE%3Denp3s0f0%0AKEEPALIVED_PEER_0%3D10.20.10.22%0AKEEPALIVED_PEER_1%3D10.20.10.21%0A"
         },
         "filesystem": "root",
         "mode": 420,

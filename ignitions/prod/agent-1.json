@@ -1,0 +1,89 @@
+{
+  "ignition": {
+    "version": "2.2.0"
+  },
+  "networkd": {
+    "units": [
+      {
+        "contents": "[Match] \nName=enp4s0f2\n\n[Network]\nAddress=10.20.12.41/24\nGateway=10.20.12.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
+        "name": "00-sync.network"
+      },
+      {
+        "contents": "[Match] \nName=enp4s0f0\n\n[Network]\nAddress=10.20.10.41/24\nGateway=10.20.10.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
+        "name": "00-serv.network"
+      },
+      {
+        "contents": "[Match] \nName=enp4s0f1\n\n[Network]\nAddress=10.20.11.41/24\nGateway=10.20.11.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
+        "name": "00-mgmt.network"
+      }
+    ]
+  },
+  "passwd": {
+    "groups": [
+      {
+        "name": "ssh"
+      }
+    ],
+    "users": [
+      {
+        "groups": [
+          "sudo",
+          "docker",
+          "ssh"
+        ],
+        "name": "claudio",
+        "sshAuthorizedKeys": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyvOm1lNZQDREfzZyTrR3rFXlqOkcg/gm0qj0Bohi/KSBNrY3Lb2b/7XtAGc6kp4DOYwvyH0I6GxAkQP6heA72OYd3T0sSK/RcMFQHW0DAVTV6CiRhCUV4fKwS57hnZ02sEP3on7gaCD5Mf8gm+zwSoLa+jgZ2MMQrwIz+BcE2rXrMXuPF4QAn9SHSpKA+ja8V/o89Dt4J58awWe3MsccpEnnvkyGoNb82h+Xl96OrCO1Kw5fiuk0LbOs5iVEnxu6rDcU0KFphE4Ggep/BtVPjSwYQDn3fAZ0z3TAUOisi7o+2tY8dq8+AuuvgsUnwpaiUQHpDlxurK5ZQ0/YFzxlVqq1Dm2rk1tuum7xhjimc5HbC5Jq+f7cB9C5MfC7I+uVfjS7PILqY+JEvayTr7C8tYEqD0hF/mmnePLMvTdnL6E5dpkkLKw9DjL3PGpn1KSlspGfY3GRkjzdiMUtrDDym42EflqJn3zAGlm8ZlA2INmOmUgeNr1JJTK2AjycqYIB/GVgG/J6kqf9HaFijGwuSxlyGq3OajKNgtL/WYhpK1O88FXV3rYi03CeG1kdQ3okigibuY+OnKsviUGlOwD+9BHnMnM1exfIYkpflAWI9GxGgFpM7RFuA3Mbag3KeJ0pM7zz+KBPeuSgubVpgpvRe3sIQQ6EWt77kgYk6Ma7C7w== claudio@net-sec.local",
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDUNQfEB9pqy3yQ53sJEsczgFBYzP+Lvfrz/wlQ+4iR3yBce9s4ZO8I8GEFfaxbHAJEc5fAx0rhOd4QKC/XHF2KT+nBq/gGXQjvmxgVDzJU6lOLMQhV1WQNo4xaBmoN5VKSWWuB+Jv3ipF28WzhbBHQZ8BqCZEo9h+M4olmlN+XZnrcrXwU4ct9VPsy77yVI134HVJGiHLrlXUUvgJ0Bdh32C1RCYSgyo5zzgtxU24ldFiqSYSCqwJ+EQWE0ejnY1oNFU2A0KGtSrzmKfrus2xbxPfgAVZqJSJw5PId9DknsbAIW4Wv1xPG+UsbIboKn7anDffmHLYr6Qwal3DjW2nt/j9MsQhyzWw4rh+PKQFI/e9A3g8a0gTnV/4cpFIgeX8wWfomGKE0zXnZaIORLWCwz+z5fYtFT5d5JipNctnjEQObk1wX5sRroYfPGG012cCcY8nQN4WSUul/SCTrfC9EGozb4FwUc5IknL9OfOF5jYDeU15rQkeIdDRXQiwvmEl6vDwzgo3ZwBT5ha8uw2RP7Z3nE67zGCiO5QgBBLoU28fHeBbPPeB09yv9oX3d9gkxcYXdWjSsT9nUzTtcdMFfG29YAhnXkqPrzl2npaL8v3EbkDLmNA8bm7EKLHPJoJTMcqVN3HAtX5ACbaqQtAyNJbyxHTerOAQHeR6YdssirQ== claudio.walser@srf.ch"
+        ]
+      },
+      {
+        "groups": [
+          "sudo",
+          "docker"
+        ],
+        "name": "local-admin",
+        "passwordHash": "$6$jbwxN8UB$4op7Xz1BPV9SiSz8rkJJ6.zwgpWbe4/sqjs5duXy7e.3zUGh3MDyt11m62iFokkMMrFnYpWtlsJo1grf7XXfy."
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "contents": {
+          "source": "data:,agent-1.net-sec.local"
+        },
+        "filesystem": "root",
+        "mode": 420,
+        "path": "/etc/hostname"
+      },
+      {
+        "contents": {
+          "source": "data:,HOSTNAME%3Dagent-1%0AIP_SERV%3D10.20.10.41%0AIP_MGMT%3D10.20.11.41%0AIP_SYNC%3D10.20.12.41%0A"
+        },
+        "filesystem": "root",
+        "mode": 420,
+        "path": "/etc/env"
+      }
+    ],
+    "filesystems": [
+      {
+        "mount": {
+          "device": "/dev/sdb",
+          "format": "ext4",
+          "wipe_filesystem": true
+        },
+        "name": "docker-data"
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb\nWhere=/var/lib/docker\nType=ext4\n[Install]\nWantedBy=local-fs.target",
+        "enable": true,
+        "name": "docker-data.mount"
+      }
+    ]
+  }
+}

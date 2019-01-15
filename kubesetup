@@ -4,15 +4,15 @@
 mkdir -p /home/claudio/kubecfg/
 vi /home/claudio/kubecfg/kubeadm-config.yaml
 
-	apiVersion: kubeadm.k8s.io/v1beta1
-	kind: ClusterConfiguration
-	kubernetesVersion: stable
-	apiServer:
-	  certSANs:
-	  - "10.20.1.50"
-	controlPlaneEndpoint: "10.20.1.50:6443"
-	networking:
-	  podSubnet: 192.168.0.0/16
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+kubernetesVersion: stable
+apiServer:
+  certSANs:
+  - "10.20.10.20"
+controlPlaneEndpoint: "10.20.10.20:6443"
+networking:
+  podSubnet: 192.168.0.0/16
 
 
 sudo kubeadm init --config=/home/claudio/kubecfg/kubeadm-config.yaml
@@ -32,18 +32,29 @@ sudo kubeadm init --config=/home/claudio/kubecfg/kubeadm-config.yaml
 		as root:
 
 		  # remember this command to join other masters
-		  sudo kubeadm join 10.20.1.50:6443 --token 5n7wjh.x2xtc5djm5gv824d --discovery-token-ca-cert-hash sha256:af4ee5190eb07d2efb0385fbe2646c268df7d661f37b56078672c707295aa2d9 --experimental-control-plane
+		  sudo kubeadm join 10.20.10.20:6443 --token <token> --discovery-token-ca-cert-hash sha256:<cert-hash> --experimental-control-plane
 
 
 
+sudo mkdir -p /root/.kube
+sudo cp /etc/kubernetes/admin.conf /root/.kube/config
 
+sudo mkdir -p /home/${USER}/.kube
+sudo cp /etc/kubernetes/admin.conf /home/${USER}/.kube/config
+sudo chown -R ${USER}: /home/${USER}/.kube
+
+
+
+#weave
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+kubectl get pod -n kube-system -w
 
 
 
 
 USER=claudio # customizable
 FROM_PLANE="10.20.1.51"
-CONTROL_PLANE_IPS="10.20.1.52 10.20.1.53"
+CONTROL_PLANE_IPS="10.20.10.22 10.20.10.23"
 
 sudo cp -R /etc/kubernetes /home/${USER}
 sudo chown -R ${USER}: /home/${USER}/kubernetes
@@ -60,18 +71,6 @@ for host in ${CONTROL_PLANE_IPS}; do
     scp /home/${USER}/kubernetes/admin.conf "${USER}"@$host:
 done
 
-sudo mkdir -p /root/.kube
-sudo cp /etc/kubernetes/admin.conf /root/.kube/config
-
-sudo mkdir -p /home/${USER}/.kube
-sudo cp /etc/kubernetes/admin.conf /home/${USER}/.kube/config
-sudo chown -R ${USER}: /home/${USER}/.kube
-
-
-
-
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-legacy.yml
-kubectl get pod -n kube-system -w
 
 
 

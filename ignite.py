@@ -6,7 +6,6 @@ import argparse
 import yaml
 import json
 import urllib.parse
-
 from pprint import pprint
 
 
@@ -15,6 +14,7 @@ parser.add_argument('environment', metavar='e', type=str, help='the environment 
 parser.add_argument('hostname', metavar='h', type=str, help='the hostname you want to create for')
 
 args = parser.parse_args()
+
 
 class NetworkConfig(object):
 

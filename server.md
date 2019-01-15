@@ -1,38 +1,3 @@
-G6 380er
-ProLiant DL380 Gen6, 2X Intel E5540 2.53 GHz, 2x 460 Watt, 4x LAN, 6x 10 Gb
-ProLiant DL380 Gen6, 2X Intel E5540 2.53 GHz, 2x 460 Watt, 4x 1 GB, 
-
-
-G7 380er
-ProLiant DL380 Gen7, 32 GB, 2X Intel E5630 2.53 GHz, 3x 146GB, 2x 460 Watt, 4x LAN,
-ProLiant DL380 Gen7, 12 GB, 1x Intel E5640 2.66 GHz, 3x 72GB, 2x 460 Watt, 6x 1 GB, 
-ProLiant DL380 Gen7, 12 GB, 2x Intel E5640 2.66 GHz, 3x 72GB, 2x 460 Watt, 6x 1 GB, 
-
-
-
-2 DNS - schwachbrüstig
-3 Fileserver - Cisco von Mathias
-
-2 Rancher Master - schwachbrüstig
-4 Rancher Agents - DL580er
-
-
-G7 Rancher Master-1 und DNS-1
-ProLiant DL380 Gen7, 96 GB, 2x Intel X5677 3.47, 2x 750 Watt, 4x 1 GB, 
-G7 Rancher Master-2 und DNS-2
-ProLiant DL380 Gen7, 68 GB, 2x Intel L5630 2.13, 2x 750 Watt, 4x 1 GB, 
-
-
-G7 580er - Kubernetes Nodes
-ProLiant DL580 Gen7, 112 GB, 4x Intel Xenon  X7559 2.0 GHZ, 4x 1200 Watt, 8x 1 GB, 4x 10 Gb
-ProLiant DL580 Gen7, 256 GB, 4x Intel Xenon  X7559 2.0 GHZ, 4x 1200 Watt, 8x 1 GB, 4x 10 Gb
-ProLiant DL580 Gen7, 128 GB, 4x Intel Xenon  X7559 2.0 GHZ, 4x 1200 Watt, 8x 1 GB, 4x 10 Gb
-ProLiant DL580 Gen7, 128 GB, 4x Intel Xenon  X7559 2.0 GHZ, 4x 1200 Watt, 8x 1 GB, 4x 10 Gb
-
-
-
-
-
 #Installation so far - i salted it btw: https://github.com/claudio-walser/salt
 
 nano /etc/apt/sources.list

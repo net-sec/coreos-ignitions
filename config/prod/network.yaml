@@ -58,14 +58,56 @@ master-3:
 
 agent-1:
   serv:
-    interface: enp3s0f0
+    interface: enp4s0f0
     address: 10.20.10.41
     gateway: 10.20.10.1
-  mgmt: 
-    interface: enp3s0f1
+  mgmt:
+    interface: enp4s0f1
     address: 10.20.11.41
     gateway: 10.20.11.1
   sync:
-    interface: enp4s0f0
+    interface: enp4s0f2
     address: 10.20.12.41
+    gateway: 10.20.12.1
+
+agent-2:
+  serv:
+    interface: enp4s0f0
+    address: 10.20.10.42
+    gateway: 10.20.10.1
+  mgmt:
+    interface: enp4s0f1
+    address: 10.20.11.42
+    gateway: 10.20.11.1
+  sync:
+    interface: enp4s0f2
+    address: 10.20.12.42
+    gateway: 10.20.12.1
+
+agent-3:
+  serv:
+    interface: enp4s0f0
+    address: 10.20.10.43
+    gateway: 10.20.10.1
+  mgmt:
+    interface: enp4s0f1
+    address: 10.20.11.43
+    gateway: 10.20.11.1
+  sync:
+    interface: enp4s0f2
+    address: 10.20.12.43
+    gateway: 10.20.12.1
+
+agent-4:
+  serv:
+    interface: enp4s0f0
+    address: 10.20.10.44
+    gateway: 10.20.10.1
+  mgmt:
+    interface: enp4s0f1
+    address: 10.20.11.44
+    gateway: 10.20.11.1
+  sync:
+    interface: enp4s0f2
+    address: 10.20.12.44
     gateway: 10.20.12.1
