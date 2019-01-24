@@ -5,15 +5,15 @@
   "networkd": {
     "units": [
       {
-        "contents": "[Match] \nName=enp0s8\n\n[Network]\nAddress=10.20.10.23/24\nGateway=10.20.10.1\nDNS=10.20.10.10 DNS=8.8.4.4 ",
+        "contents": "[Match] \nName=enp0s3\n\n[Network]\nAddress=192.168.43.23/24\nGateway=192.168.43.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
         "name": "00-serv.network"
       },
       {
-        "contents": "[Match] \nName=enp0s9\n\n[Network]\nAddress=10.20.11.23/24\nGateway=10.20.11.1\nDNS=10.20.10.10 DNS=8.8.4.4 ",
+        "contents": "[Match] \nName=enp0s9\n\n[Network]\nAddress=10.20.11.23/24\nGateway=10.20.11.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
         "name": "00-mgmt.network"
       },
       {
-        "contents": "[Match] \nName=enp0s10\n\n[Network]\nAddress=10.20.12.23/24\nGateway=10.20.12.1\nDNS=10.20.10.10 DNS=8.8.4.4 ",
+        "contents": "[Match] \nName=enp0s10\n\n[Network]\nAddress=10.20.12.23/24\nGateway=10.20.12.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
         "name": "00-sync.network"
       }
     ]
@@ -59,7 +59,7 @@
       },
       {
         "contents": {
-          "source": "data:,HOSTNAME%3Dmaster-3%0AIP_SERV%3D10.20.10.23%0AIP_MGMT%3D10.20.11.23%0AIP_SYNC%3D10.20.12.23%0AKEEPALIVED_SRC%3D10.20.10.23%0AKEEPALIVED_VIP%3D10.20.10.20%0AKEEPALIVED_INTERFACE%3Denp0s8%0AKEEPALIVED_PEER_0%3D10.20.10.21%0AKEEPALIVED_PEER_1%3D10.20.10.22%0A"
+          "source": "data:,HOSTNAME%3Dmaster-3%0AIP_SERV%3D192.168.43.23%0AIP_MGMT%3D10.20.11.23%0AIP_SYNC%3D10.20.12.23%0AKEEPALIVED_SRC%3D192.168.43.23%0AKEEPALIVED_VIP%3D192.168.43.20%0AKEEPALIVED_INTERFACE%3Denp0s3%0AKEEPALIVED_PEER_0%3D192.168.43.21%0AKEEPALIVED_PEER_1%3D192.168.43.22%0A"
         },
         "filesystem": "root",
         "mode": 420,

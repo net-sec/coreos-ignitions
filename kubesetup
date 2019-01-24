@@ -9,10 +9,10 @@ kind: ClusterConfiguration
 kubernetesVersion: stable
 apiServer:
   certSANs:
-  - "10.20.10.20"
-controlPlaneEndpoint: "10.20.10.20:6443"
+  - "192.168.43.20"
+controlPlaneEndpoint: "192.168.43.20:6443"
 networking:
-  podSubnet: 192.168.0.0/16
+  podSubnet: 10.10.0.0/16
 
 
 sudo kubeadm init --config=/home/claudio/kubecfg/kubeadm-config.yaml
@@ -32,7 +32,7 @@ sudo kubeadm init --config=/home/claudio/kubecfg/kubeadm-config.yaml
 		as root:
 
 		  # remember this command to join other masters
-		  sudo kubeadm join 10.20.10.20:6443 --token <token> --discovery-token-ca-cert-hash sha256:<cert-hash> --experimental-control-plane
+		  sudo kubeadm join 192.168.43.20:6443 --token jug9b4.1l2nzw7en1hxq3ry --discovery-token-ca-cert-hash sha256:1eb5d5622a5156c4fd02fd391c768907cb42df2711bd7547f649c9d141eabbe3 --experimental-control-plane
 
 
 
@@ -54,7 +54,7 @@ kubectl get pod -n kube-system -w
 
 USER=claudio # customizable
 FROM_PLANE="10.20.1.51"
-CONTROL_PLANE_IPS="10.20.10.22 10.20.10.23"
+CONTROL_PLANE_IPS="192.168.43.22 192.168.43.23"
 
 sudo cp -R /etc/kubernetes /home/${USER}
 sudo chown -R ${USER}: /home/${USER}/kubernetes
