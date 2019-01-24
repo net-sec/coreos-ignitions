@@ -100,3 +100,31 @@ sudo chown -R ${USER}: /home/${USER}/.kube
 
 
 sudo systemctl enable kubelet
+
+# allow master nodes to run pods
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+# initialize helm
+vi tiller.yaml
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tiller
+  namespace: kube-system
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: tiller-clusterrolebinding
+subjects:
+- kind: ServiceAccount
+  name: tiller
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: ""
+
+kubectl apply -f tiller.yaml
+helm init --service-account tiller

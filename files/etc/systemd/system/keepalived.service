@@ -9,9 +9,8 @@ Restart=always
 User=claudio
 Group=claudio
 EnvironmentFile=/etc/env
+ExecStartPre=-/usr/bin/docker rm -f keepalived
 ExecStartPre=-/usr/bin/docker pull arcts/keepalived:latest
-ExecStartPre=-/usr/bin/docker kill keepalived
-ExecStartPre=-/usr/bin/docker rm keepalived
 ExecStart=/usr/bin/docker run 					\
 	--net=host									\
 	--cap-add NET_ADMIN 						\
@@ -24,10 +23,13 @@ ExecStart=/usr/bin/docker run 					\
 	-e KEEPALIVED_UNICAST_PEER_1=${KEEPALIVED_PEER_1}\
 	-e KEEPALIVED_TRACK_INTERFACE_1=${KEEPALIVED_INTERFACE}\
 	-e KEEPALIVED_VIRTUAL_IPADDRESS_1="${KEEPALIVED_VIP}/24 dev ${KEEPALIVED_INTERFACE}" \
+	-e KEEPALIVED_KUBE_APISERVER_CHECK=true		\
+	-e KUBE_APISERVER_ADDRESS=${KEEPALIVED_SRC}	\
+	-e KUBE_APISERVER_CHK_FALL=2				\
+	-e KUBE_APISERVER_CHK_INTERVAL=2			\
 	--name keepalived							\
 	arcts/keepalived:latest
-ExecStop=/usr/bin/docker kill keepalived
-ExecStopPost=-/usr/bin/docker rm keepalived
+ExecStop=/usr/bin/docker stop keepalived
 
 [Install]
 WantedBy=multi-user.target
