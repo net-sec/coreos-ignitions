@@ -1,0 +1,46 @@
+origin: sync.net-sec.cluster.
+ttl: 1h
+
+soa:
+    ns: ns-1.sync.net-sec.cluster.
+    ns: ns-2.sync.net-sec.cluster.
+    ns: ns-3.sync.net-sec.cluster.
+    user: root.sync.net-sec.cluster.
+
+records:
+    - type: NS
+      value: ns-1.sync.net-sec.cluster.
+    - type: NS
+      value: ns-2.sync.net-sec.cluster.
+    - type: NS
+      value: ns-3.sync.net-sec.cluster.
+
+    - type: A
+      host: ns-1
+      value: 10.20.12.21
+
+    - type: A
+      host: ns-2
+      value: 10.20.12.22
+
+    - type: A
+      host: ns-3
+      value: 10.20.12.23
+
+
+    - type: A
+      host: master
+      value: 10.20.12.20
+
+    - type: A
+      host: master-1
+      value: 10.20.12.21
+
+    - type: A
+      host: master-2
+      value: 10.20.12.22
+
+    - type: A
+      host: master-3
+      value: 10.20.12.23
+

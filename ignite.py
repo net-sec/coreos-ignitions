@@ -16,6 +16,13 @@ parser.add_argument('hostname', metavar='h', type=str, help='the hostname you wa
 args = parser.parse_args()
 
 
+class DomainConfigs(object):
+
+	domain = None
+
+	def __init__(self):
+
+
 class NetworkConfig(object):
 
 	config = {}
