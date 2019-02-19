@@ -1,0 +1,27 @@
+[Unit]
+Description=GlusterFS in a Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+User=claudio
+Group=claudio
+EnvironmentFile=/etc/env
+ExecStartPre=-/usr/bin/docker rm -f gluster
+ExecStartPre=-/usr/bin/docker pull gluster/gluster-centos
+ExecStart=/usr/bin/docker run \
+    -v /etc/glusterfs:/etc/glusterfs:z \
+    -v /var/lib/glusterd:/var/lib/glusterd:z \
+    -v /var/log/glusterfs:/var/log/glusterfs:z \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    -v /dev/:/dev \
+    --privileged=true \
+    --net=host \
+    --name gluster \
+    gluster/gluster-centos
+ExecStop=/usr/bin/docker stop gluster
+
+[Install]
+WantedBy=multi-user.target

@@ -7,12 +7,14 @@ defaults:
 master-1:
   vip:
     - address: 10.20.10.20
+      network: mgmt
+    - address: 10.20.11.20
       network: serv
-  serv:
+  mgmt:
     interface: enp3s0f0
     address: 10.20.10.21
     gateway: 10.20.10.1
-  mgmt: 
+  serv: 
     interface: enp3s0f1
     address: 10.20.11.21
     gateway: 10.20.11.1
@@ -24,12 +26,14 @@ master-1:
 master-2:
   vip:
     - address: 10.20.10.20
+      network: mgmt
+    - address: 10.20.11.20
       network: serv
-  serv:
+  mgmt:
     interface: enp3s0f0
     address: 10.20.10.22
     gateway: 10.20.10.1
-  mgmt: 
+  serv: 
     interface: enp3s0f1
     address: 10.20.11.22
     gateway: 10.20.11.1
@@ -41,12 +45,14 @@ master-2:
 master-3:
   vip:
     - address: 10.20.10.20
+      network: mgmt
+    - address: 10.20.11.20
       network: serv
-  serv:
+  mgmt:
     interface: enp3s0f0
     address: 10.20.10.23
     gateway: 10.20.10.1
-  mgmt: 
+  serv: 
     interface: enp3s0f1
     address: 10.20.11.23
     gateway: 10.20.11.1
@@ -57,11 +63,11 @@ master-3:
 
 
 agent-1:
-  serv:
+  mgmt:
     interface: enp4s0f0
     address: 10.20.10.41
     gateway: 10.20.10.1
-  mgmt:
+  serv:
     interface: enp4s0f1
     address: 10.20.11.41
     gateway: 10.20.11.1
@@ -71,11 +77,11 @@ agent-1:
     gateway: 10.20.12.1
 
 agent-2:
-  serv:
+  mgmt:
     interface: enp4s0f0
     address: 10.20.10.42
     gateway: 10.20.10.1
-  mgmt:
+  serv:
     interface: enp4s0f1
     address: 10.20.11.42
     gateway: 10.20.11.1
@@ -85,11 +91,11 @@ agent-2:
     gateway: 10.20.12.1
 
 agent-3:
-  serv:
+  mgmt:
     interface: enp4s0f0
     address: 10.20.10.43
     gateway: 10.20.10.1
-  mgmt:
+  serv:
     interface: enp4s0f1
     address: 10.20.11.43
     gateway: 10.20.11.1
@@ -99,11 +105,11 @@ agent-3:
     gateway: 10.20.12.1
 
 agent-4:
-  serv:
+  mgmt:
     interface: enp4s0f0
     address: 10.20.10.44
     gateway: 10.20.10.1
-  mgmt:
+  serv:
     interface: enp4s0f1
     address: 10.20.11.44
     gateway: 10.20.11.1

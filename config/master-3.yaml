@@ -19,16 +19,30 @@ passwd:
       groups:
       - sudo
       - docker
-
+storage:
+  filesystems:
+    - name: gluster
+      mount:
+        device: /dev/sdb1
+        format: ext4
+        wipe_filesystem: true
 systemd:
   units:
     - name: docker.service
       enable: true
-    - name: keepalived.service
+    - name: keepalived-mgmt.service
       enable: true
       contents:
-        sourceFile: "files/etc/systemd/system/keepalived.service"
+        sourceFile: "files/etc/systemd/system/keepalived-mgmt.service"
+    - name: keepalived-serv.service
+      enable: true
+      contents:
+        sourceFile: "files/etc/systemd/system/keepalived-serv.service"
     - name: haproxy.service
       enable: true
       contents:
         sourceFile: "files/etc/systemd/system/haproxy.service"
+    - name: gluster.mount
+      enable: true
+      contents:
+        sourceFile: "files/etc/systemd/system/gluster.mount"

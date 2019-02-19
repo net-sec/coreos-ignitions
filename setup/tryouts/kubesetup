@@ -53,8 +53,7 @@ kubectl get pod -n kube-system -w
 
 
 USER=claudio # customizable
-FROM_PLANE="10.20.1.51"
-CONTROL_PLANE_IPS="192.168.43.22 192.168.43.23"
+CONTROL_PLANE_IPS="10.20.10.22 10.20.10.23"
 
 sudo cp -R /etc/kubernetes /home/${USER}
 sudo chown -R ${USER}: /home/${USER}/kubernetes

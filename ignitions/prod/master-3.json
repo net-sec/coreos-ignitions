@@ -6,15 +6,15 @@
     "units": [
       {
         "contents": "[Match] \nName=enp3s0f0\n\n[Network]\nAddress=10.20.10.23/24\nGateway=10.20.10.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
+        "name": "00-mgmt.network"
+      },
+      {
+        "contents": "[Match] \nName=enp3s0f1\n\n[Network]\nAddress=10.20.11.23/24\nGateway=10.20.11.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
         "name": "00-serv.network"
       },
       {
         "contents": "[Match] \nName=enp4s0f0\n\n[Network]\nAddress=10.20.12.23/24\nGateway=10.20.12.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
         "name": "00-sync.network"
-      },
-      {
-        "contents": "[Match] \nName=enp3s0f1\n\n[Network]\nAddress=10.20.11.23/24\nGateway=10.20.11.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
-        "name": "00-mgmt.network"
       }
     ]
   },
@@ -59,7 +59,7 @@
       },
       {
         "contents": {
-          "source": "data:,HOSTNAME%3Dmaster-3%0AIP_SERV%3D10.20.10.23%0AIP_MGMT%3D10.20.11.23%0AIP_SYNC%3D10.20.12.23%0AKEEPALIVED_SRC%3D10.20.10.23%0AKEEPALIVED_VIP%3D10.20.10.20%0AKEEPALIVED_INTERFACE%3Denp3s0f0%0AKEEPALIVED_PEER_0%3D10.20.10.22%0AKEEPALIVED_PEER_1%3D10.20.10.21%0A"
+          "source": "data:,HOSTNAME%3Dmaster-3%0AIP_SERV%3D10.20.11.23%0AIP_MGMT%3D10.20.10.23%0AIP_SYNC%3D10.20.12.23%0AMGMT_KEEPALIVED_SRC%3D10.20.10.23%0AMGMT_KEEPALIVED_ID%3D1%0AMGMT_KEEPALIVED_VIP%3D10.20.10.20%0AMGMT_KEEPALIVED_INTERFACE%3Denp3s0f0%0AMGMT_KEEPALIVED_PEER_0%3D10.20.10.22%0AMGMT_KEEPALIVED_PEER_1%3D10.20.10.21%0ASERV_KEEPALIVED_SRC%3D10.20.11.23%0ASERV_KEEPALIVED_ID%3D2%0ASERV_KEEPALIVED_VIP%3D10.20.11.20%0ASERV_KEEPALIVED_INTERFACE%3Denp3s0f1%0ASERV_KEEPALIVED_PEER_0%3D10.20.11.22%0ASERV_KEEPALIVED_PEER_1%3D10.20.11.21%0A"
         },
         "filesystem": "root",
         "mode": 420,
@@ -74,12 +74,17 @@
         "name": "docker.service"
       },
       {
-        "contents": "[Unit]\nDescription=keepalived in a Container\nAfter=haproxy.service\nRequires=haproxy.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker pull arcts/keepalived:latest\nExecStartPre=-/usr/bin/docker kill keepalived\nExecStartPre=-/usr/bin/docker rm keepalived\nExecStart=/usr/bin/docker run \t\t\t\t\t\\\n\t--net=host\t\t\t\t\t\t\t\t\t\\\n\t--cap-add NET_ADMIN \t\t\t\t\t\t\\\n\t-e KEEPALIVED_AUTOCONF=true\t\t\t\t\t\\\n\t-e KEEPALIVED_STATE=MASTER\t\t\t\t\t\\\n\t-e KEEPALIVED_INTERFACE=${KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_ROUTER_ID=1\t\t\t\\\n\t-e KEEPALIVED_UNICAST_SRC_IP=${KEEPALIVED_SRC}\\\n\t-e KEEPALIVED_UNICAST_PEER_0=${KEEPALIVED_PEER_0}\\\n\t-e KEEPALIVED_UNICAST_PEER_1=${KEEPALIVED_PEER_1}\\\n\t-e KEEPALIVED_TRACK_INTERFACE_1=${KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_IPADDRESS_1=\"${KEEPALIVED_VIP}/24 dev ${KEEPALIVED_INTERFACE}\" \\\n\t--name keepalived\t\t\t\t\t\t\t\\\n\tarcts/keepalived:latest\nExecStop=/usr/bin/docker kill keepalived\nExecStopPost=-/usr/bin/docker rm keepalived\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=keepalived in a Container\nAfter=haproxy.service\nRequires=haproxy.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f keepalived-mgmt\nExecStartPre=-/usr/bin/docker pull arcts/keepalived:latest\nExecStart=/usr/bin/docker run \t\t\t\t\t\\\n\t--net=host\t\t\t\t\t\t\t\t\t\\\n\t--cap-add NET_ADMIN \t\t\t\t\t\t\\\n\t-e KEEPALIVED_AUTOCONF=true\t\t\t\t\t\\\n\t-e KEEPALIVED_STATE=MASTER\t\t\t\t\t\\\n\t-e KEEPALIVED_INTERFACE=${MGMT_KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_ROUTER_ID=${MGMT_KEEPALIVED_ID}\t\t\t\\\n\t-e KEEPALIVED_UNICAST_SRC_IP=${MGMT_KEEPALIVED_SRC}\\\n\t-e KEEPALIVED_UNICAST_PEER_0=${MGMT_KEEPALIVED_PEER_0}\\\n\t-e KEEPALIVED_UNICAST_PEER_1=${MGMT_KEEPALIVED_PEER_1}\\\n\t-e KEEPALIVED_TRACK_INTERFACE_1=${MGMT_KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_IPADDRESS_1=\"${MGMT_KEEPALIVED_VIP}/24 dev ${MGMT_KEEPALIVED_INTERFACE}\" \\\n\t-e KEEPALIVED_KUBE_APISERVER_CHECK=true\t\t\\\n\t-e KUBE_APISERVER_ADDRESS=${MGMT_KEEPALIVED_SRC}\t\\\n\t-e KUBE_APISERVER_CHK_FALL=2\t\t\t\t\\\n\t-e KUBE_APISERVER_CHK_INTERVAL=2\t\t\t\\\n\t--name keepalived-mgmt\t\t\t\t\t\t\\\n\tarcts/keepalived:latest\nExecStop=/usr/bin/docker stop keepalived-mgmt\n\n[Install]\nWantedBy=multi-user.target\n",
         "enable": true,
-        "name": "keepalived.service"
+        "name": "keepalived-mgmt.service"
       },
       {
-        "contents": "[Unit]\nDescription=Haproxy in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker pull walser/haproxy:latest\nExecStartPre=-/usr/bin/docker kill haproxy\nExecStartPre=-/usr/bin/docker rm haproxy\nExecStart=/usr/bin/docker run \\\n    -p 8080:8080 \\\n    -p 6444:6443 \\\n    -e LB_HOST=${HOSTNAME} \\\n    --name haproxy \\\n    walser/haproxy:latest\nExecStop=/usr/bin/docker kill haproxy\nExecStopPost=-/usr/bin/docker rm haproxy\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=keepalived in a Container\nAfter=haproxy.service\nRequires=haproxy.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f keepalived-serv\nExecStartPre=-/usr/bin/docker pull arcts/keepalived:latest\nExecStart=/usr/bin/docker run \t\t\t\t\t\\\n\t--net=host\t\t\t\t\t\t\t\t\t\\\n\t--cap-add NET_ADMIN \t\t\t\t\t\t\\\n\t-e KEEPALIVED_AUTOCONF=true\t\t\t\t\t\\\n\t-e KEEPALIVED_STATE=MASTER\t\t\t\t\t\\\n\t-e KEEPALIVED_INTERFACE=${SERV_KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_ROUTER_ID=${SERV_KEEPALIVED_ID}\t\t\t\\\n\t-e KEEPALIVED_UNICAST_SRC_IP=${SERV_KEEPALIVED_SRC}\\\n\t-e KEEPALIVED_UNICAST_PEER_0=${SERV_KEEPALIVED_PEER_0}\\\n\t-e KEEPALIVED_UNICAST_PEER_1=${SERV_KEEPALIVED_PEER_1}\\\n\t-e KEEPALIVED_TRACK_INTERFACE_1=${SERV_KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_IPADDRESS_1=\"${SERV_KEEPALIVED_VIP}/24 dev ${SERV_KEEPALIVED_INTERFACE}\" \\\n\t--name keepalived-serv\t\t\t\t\t\t\\\n\tarcts/keepalived:latest\nExecStop=/usr/bin/docker stop keepalived\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enable": true,
+        "name": "keepalived-serv.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Haproxy in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f haproxy\nExecStartPre=-/usr/bin/docker pull walser/haproxy:latest\nExecStart=/usr/bin/docker run \\\n    -p 8080:8080 \\\n    -p 6444:6443 \\\n    -e LB_HOST=${HOSTNAME} \\\n    --name haproxy \\\n    walser/haproxy:latest\nExecStop=/usr/bin/docker stop haproxy\n\n[Install]\nWantedBy=multi-user.target\n",
         "enable": true,
         "name": "haproxy.service"
       }
