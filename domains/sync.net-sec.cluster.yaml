@@ -3,8 +3,6 @@ ttl: 1h
 
 soa:
     ns: ns-1.sync.net-sec.cluster.
-    ns: ns-2.sync.net-sec.cluster.
-    ns: ns-3.sync.net-sec.cluster.
     user: root.sync.net-sec.cluster.
 
 records:
@@ -27,10 +25,6 @@ records:
       host: ns-3
       value: 10.20.12.23
 
-
-    - type: A
-      host: master
-      value: 10.20.12.20
 
     - type: A
       host: master-1

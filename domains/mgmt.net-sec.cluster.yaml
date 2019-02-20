@@ -3,8 +3,6 @@ ttl: 1h
 
 soa:
     ns: ns-1.mgmt.net-sec.cluster.
-    ns: ns-2.mgmt.net-sec.cluster.
-    ns: ns-3.mgmt.net-sec.cluster.
     user: root.mgmt.net-sec.cluster.
 
 records:
