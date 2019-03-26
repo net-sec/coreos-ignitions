@@ -46,3 +46,29 @@ systemd:
       enable: true
       contents:
         sourceFile: "files/etc/systemd/system/gluster.mount"
+    - name: gluster.service
+      enable: true
+      contents:
+        sourceFile: "files/etc/systemd/system/gluster.service"
+    - name: bind.service
+      enable: true
+      contents:
+        sourceFile: "files/etc/systemd/system/bind.service"
+
+
+    - name: gluster.mount
+      enable: true
+      contents:
+        sourceFile: "files/etc/systemd/system/gluster.mount"
+    - name: gluster.mount
+      enable: true
+      contents:
+        sourceFile: "files/etc/systemd/system/gluster.mount"
+    - name: gluster.mount
+      enable: true
+      contents:
+        sourceFile: "files/etc/systemd/system/gluster.mount"
+    - name: gluster.mount
+      enable: true
+      contents:
+        sourceFile: "files/etc/systemd/system/gluster.mount"

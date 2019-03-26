@@ -12,7 +12,7 @@ EnvironmentFile=/etc/env
 ExecStartPre=-/usr/bin/docker rm -f haproxy
 ExecStartPre=-/usr/bin/docker pull walser/haproxy:latest
 ExecStart=/usr/bin/docker run \
-    -p 8080:8080 \
+    -p 8081:8080 \
     -p 6444:6443 \
     -e LB_HOST=${HOSTNAME} \
     --name haproxy \

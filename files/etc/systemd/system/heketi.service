@@ -1,0 +1,25 @@
+[Unit]
+Description=Heketi in a Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+User=claudio
+Group=claudio
+EnvironmentFile=/etc/env
+ExecStartPre=-/usr/bin/docker rm -f heketi
+ExecStartPre=-/usr/bin/docker pull heketi/heketi:latest
+ExecStartPre=-/usr/bin/chown -R 1000: /etc/heketi
+ExecStartPre=-/usr/bin/chown -R 1000: /var/lib/heketi
+ExecStart=/usr/bin/docker run \
+    -p 8080:8080 \
+    -v /etc/heketi:/etc/heketi \
+    -v /var/lib/heketi:/var/lib/heketi \
+    --name heketi \
+    heketi/heketi:latest
+ExecStop=/usr/bin/docker stop heketi
+
+[Install]
+WantedBy=multi-user.target

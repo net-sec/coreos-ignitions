@@ -1,0 +1,25 @@
+[Unit]
+Description=Bind9 in a Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+User=claudio
+Group=claudio
+EnvironmentFile=/etc/env
+ExecStartPre=-/usr/bin/docker rm -f bind
+ExecStartPre=-/usr/bin/docker pull walser/dnssec:latest
+ExecStart=/usr/bin/docker run \
+    -v /etc/domains/yaml:/domains \
+    -v /etc/domains/keys:/var/bind/keys \
+    -p 53:53/udp \
+    -p 53:53/tcp \
+    -e SALT=7d70b91db47137cd \
+    --name bind \
+    walser/dnssec:latest
+ExecStop=/usr/bin/docker stop bind
+
+[Install]
+WantedBy=multi-user.target

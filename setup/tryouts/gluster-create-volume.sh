@@ -1,0 +1,1 @@
+gluster volume create bind-data replica 3 transport tcp 10.20.10.21:/gluster/bind-data 10.20.10.22:/gluster/bind-data 10.20.10.23:/gluster/bind-data
