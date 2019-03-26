@@ -21,7 +21,7 @@ class DomainConfigs(object):
 	domain = None
 
 	def __init__(self):
-
+		pass
 
 class NetworkConfig(object):
 
