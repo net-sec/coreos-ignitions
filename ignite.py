@@ -64,19 +64,19 @@ class NetworkConfig(object):
 			print('Config for %s not found in network.yaml' % (hostname))
 			sys.exit(1)
 
-		envFile = 'HOSTNAME%3D{}%0A'.format(hostname)
-		envFile += 'IP_SERV%3D{}%0A'.format(self.config[hostname]['serv']['address'])
-		envFile += 'IP_MGMT%3D{}%0A'.format(self.config[hostname]['mgmt']['address'])
-		envFile += 'IP_SYNC%3D{}%0A'.format(self.config[hostname]['sync']['address'])
+		envFile = 'HOSTNAME={}\n'.format(hostname)
+		envFile += 'IP_SERV={}\n'.format(self.config[hostname]['serv']['address'])
+		envFile += 'IP_MGMT={}\n'.format(self.config[hostname]['mgmt']['address'])
+		envFile += 'IP_SYNC={}\n'.format(self.config[hostname]['sync']['address'])
 
 		if 'vip' in self.config[hostname]:
 			numVip = 1
 			for myVip in self.config[hostname]['vip']:
 
-				envFile += '{}_KEEPALIVED_SRC%3D{}%0A'.format(myVip['network'].upper(), self.config[hostname][myVip['network']]['address'])
-				envFile += '{}_KEEPALIVED_ID%3D{}%0A'.format(myVip['network'].upper(), numVip)
-				envFile += '{}_KEEPALIVED_VIP%3D{}%0A'.format(myVip['network'].upper(), myVip['address'])
-				envFile += '{}_KEEPALIVED_INTERFACE%3D{}%0A'.format(myVip['network'].upper(), self.config[hostname][myVip['network']]['interface'])
+				envFile += '{}_KEEPALIVED_SRC={}\n'.format(myVip['network'].upper(), self.config[hostname][myVip['network']]['address'])
+				envFile += '{}_KEEPALIVED_ID={}\n'.format(myVip['network'].upper(), numVip)
+				envFile += '{}_KEEPALIVED_VIP={}\n'.format(myVip['network'].upper(), myVip['address'])
+				envFile += '{}_KEEPALIVED_INTERFACE={}\n'.format(myVip['network'].upper(), self.config[hostname][myVip['network']]['interface'])
 				
 				numPeer = 0
 				for network in self.config:
@@ -85,7 +85,7 @@ class NetworkConfig(object):
 							for foreignVip in self.config[network]['vip']:
 								if foreignVip['address'] == myVip['address']:
 									if self.config[network][foreignVip['network']]['address']:
-										envFile += '{}_KEEPALIVED_PEER_{}%3D{}%0A'.format(myVip['network'].upper(), numPeer, self.config[network][foreignVip['network']]['address'])								
+										envFile += '{}_KEEPALIVED_PEER_{}={}\n'.format(myVip['network'].upper(), numPeer, self.config[network][foreignVip['network']]['address'])								
 										numPeer += 1
 				numVip += 1
 		return envFile
@@ -114,7 +114,7 @@ with open('%s/%s.yaml' % (confPath, args.hostname)) as stream:
 			'path': '/etc/hostname',
 			'mode': 420,
 			'contents': {
-				'source': 'data:,%s.%s' % (args.hostname, network.getDomain(args.hostname))
+				'inline': '{}.{}'.format(args.hostname, network.getDomain(args.hostname))
 			}
 		})
 
@@ -123,7 +123,7 @@ with open('%s/%s.yaml' % (confPath, args.hostname)) as stream:
 			'path': '/etc/env',
 			'mode': 420,
 			'contents': {
-				'source': 'data:,%s' % (network.getEnvironment(args.hostname))
+				'inline': network.getEnvironment(args.hostname)
 			}
 		})
 
