@@ -21,9 +21,14 @@ passwd:
       - docker
 storage:
   filesystems:
-    - name: gluster
+    - name: glusterfs
       mount:
         device: /dev/sdb1
+        format: xfs
+        wipe_filesystem: true
+    - name: storageos
+      mount:
+        device: /dev/sdc1
         format: ext4
         wipe_filesystem: true
 systemd:
@@ -54,8 +59,6 @@ systemd:
       enable: true
       contents:
         sourceFile: "files/etc/systemd/system/bind.service"
-
-
     - name: gluster.mount
       enable: true
       contents:
