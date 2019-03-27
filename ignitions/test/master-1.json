@@ -51,7 +51,7 @@
     "files": [
       {
         "contents": {
-          "source": "data:,master-1.test.local"
+          "inline": "master-1.test.local"
         },
         "filesystem": "root",
         "mode": 420,
@@ -59,11 +59,29 @@
       },
       {
         "contents": {
-          "source": "data:,HOSTNAME%3Dmaster-1%0AIP_SERV%3D192.168.43.21%0AIP_MGMT%3D10.20.11.21%0AIP_SYNC%3D10.20.12.21%0AKEEPALIVED_SRC%3D192.168.43.21%0AKEEPALIVED_VIP%3D192.168.43.20%0AKEEPALIVED_INTERFACE%3Denp0s3%0AKEEPALIVED_PEER_0%3D192.168.43.22%0AKEEPALIVED_PEER_1%3D192.168.43.23%0A"
+          "inline": "HOSTNAME=master-1\nIP_SERV=192.168.43.21\nIP_MGMT=10.20.11.21\nIP_SYNC=10.20.12.21\nSERV_KEEPALIVED_SRC=192.168.43.21\nSERV_KEEPALIVED_ID=1\nSERV_KEEPALIVED_VIP=192.168.43.20\nSERV_KEEPALIVED_INTERFACE=enp0s3\nSERV_KEEPALIVED_PEER_0=192.168.43.22\nSERV_KEEPALIVED_PEER_1=192.168.43.23\n"
         },
         "filesystem": "root",
         "mode": 420,
         "path": "/etc/env"
+      }
+    ],
+    "filesystems": [
+      {
+        "mount": {
+          "device": "/dev/sdb1",
+          "format": "xfs",
+          "wipe_filesystem": true
+        },
+        "name": "glusterfs"
+      },
+      {
+        "mount": {
+          "device": "/dev/sdc1",
+          "format": "ext4",
+          "wipe_filesystem": true
+        },
+        "name": "storageos"
       }
     ]
   },
@@ -74,14 +92,54 @@
         "name": "docker.service"
       },
       {
-        "contents": "[Unit]\nDescription=keepalived in a Container\nAfter=haproxy.service\nRequires=haproxy.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker pull arcts/keepalived:latest\nExecStartPre=-/usr/bin/docker kill keepalived\nExecStartPre=-/usr/bin/docker rm keepalived\nExecStart=/usr/bin/docker run \t\t\t\t\t\\\n\t--net=host\t\t\t\t\t\t\t\t\t\\\n\t--cap-add NET_ADMIN \t\t\t\t\t\t\\\n\t-e KEEPALIVED_AUTOCONF=true\t\t\t\t\t\\\n\t-e KEEPALIVED_STATE=MASTER\t\t\t\t\t\\\n\t-e KEEPALIVED_INTERFACE=${KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_ROUTER_ID=1\t\t\t\\\n\t-e KEEPALIVED_UNICAST_SRC_IP=${KEEPALIVED_SRC}\\\n\t-e KEEPALIVED_UNICAST_PEER_0=${KEEPALIVED_PEER_0}\\\n\t-e KEEPALIVED_UNICAST_PEER_1=${KEEPALIVED_PEER_1}\\\n\t-e KEEPALIVED_TRACK_INTERFACE_1=${KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_IPADDRESS_1=\"${KEEPALIVED_VIP}/24 dev ${KEEPALIVED_INTERFACE}\" \\\n\t--name keepalived\t\t\t\t\t\t\t\\\n\tarcts/keepalived:latest\nExecStop=/usr/bin/docker kill keepalived\nExecStopPost=-/usr/bin/docker rm keepalived\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=keepalived in a Container\nAfter=haproxy.service\nRequires=haproxy.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f keepalived-mgmt\nExecStartPre=-/usr/bin/docker pull arcts/keepalived:latest\nExecStart=/usr/bin/docker run \t\t\t\t\t\\\n\t--net=host\t\t\t\t\t\t\t\t\t\\\n\t--cap-add NET_ADMIN \t\t\t\t\t\t\\\n\t-e KEEPALIVED_AUTOCONF=true\t\t\t\t\t\\\n\t-e KEEPALIVED_STATE=MASTER\t\t\t\t\t\\\n\t-e KEEPALIVED_INTERFACE=${MGMT_KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_ROUTER_ID=${MGMT_KEEPALIVED_ID}\t\t\t\\\n\t-e KEEPALIVED_UNICAST_SRC_IP=${MGMT_KEEPALIVED_SRC}\\\n\t-e KEEPALIVED_UNICAST_PEER_0=${MGMT_KEEPALIVED_PEER_0}\\\n\t-e KEEPALIVED_UNICAST_PEER_1=${MGMT_KEEPALIVED_PEER_1}\\\n\t-e KEEPALIVED_TRACK_INTERFACE_1=${MGMT_KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_IPADDRESS_1=\"${MGMT_KEEPALIVED_VIP}/24 dev ${MGMT_KEEPALIVED_INTERFACE}\" \\\n\t-e KEEPALIVED_KUBE_APISERVER_CHECK=true\t\t\\\n\t-e KUBE_APISERVER_ADDRESS=${MGMT_KEEPALIVED_SRC}\t\\\n\t-e KUBE_APISERVER_CHK_FALL=2\t\t\t\t\\\n\t-e KUBE_APISERVER_CHK_INTERVAL=2\t\t\t\\\n\t--name keepalived-mgmt\t\t\t\t\t\t\\\n\tarcts/keepalived:latest\nExecStop=/usr/bin/docker stop keepalived-mgmt\n\n[Install]\nWantedBy=multi-user.target\n",
         "enable": true,
-        "name": "keepalived.service"
+        "name": "keepalived-mgmt.service"
       },
       {
-        "contents": "[Unit]\nDescription=Haproxy in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker pull walser/haproxy:latest\nExecStartPre=-/usr/bin/docker kill haproxy\nExecStartPre=-/usr/bin/docker rm haproxy\nExecStart=/usr/bin/docker run \\\n    -p 8080:8080 \\\n    -p 6444:6443 \\\n    -e LB_HOST=${HOSTNAME} \\\n    --name haproxy \\\n    walser/haproxy:latest\nExecStop=/usr/bin/docker kill haproxy\nExecStopPost=-/usr/bin/docker rm haproxy\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=keepalived in a Container\nAfter=haproxy.service\nRequires=haproxy.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f keepalived-serv\nExecStartPre=-/usr/bin/docker pull arcts/keepalived:latest\nExecStart=/usr/bin/docker run \t\t\t\t\t\\\n\t--net=host\t\t\t\t\t\t\t\t\t\\\n\t--cap-add NET_ADMIN \t\t\t\t\t\t\\\n\t-e KEEPALIVED_AUTOCONF=true\t\t\t\t\t\\\n\t-e KEEPALIVED_STATE=MASTER\t\t\t\t\t\\\n\t-e KEEPALIVED_INTERFACE=${SERV_KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_ROUTER_ID=${SERV_KEEPALIVED_ID}\t\t\t\\\n\t-e KEEPALIVED_UNICAST_SRC_IP=${SERV_KEEPALIVED_SRC}\\\n\t-e KEEPALIVED_UNICAST_PEER_0=${SERV_KEEPALIVED_PEER_0}\\\n\t-e KEEPALIVED_UNICAST_PEER_1=${SERV_KEEPALIVED_PEER_1}\\\n\t-e KEEPALIVED_TRACK_INTERFACE_1=${SERV_KEEPALIVED_INTERFACE}\\\n\t-e KEEPALIVED_VIRTUAL_IPADDRESS_1=\"${SERV_KEEPALIVED_VIP}/24 dev ${SERV_KEEPALIVED_INTERFACE}\" \\\n\t--name keepalived-serv\t\t\t\t\t\t\t\\\n\tarcts/keepalived:latest\nExecStop=/usr/bin/docker stop keepalived-serv\n\n[Install]\nWantedBy=multi-user.target",
+        "enable": true,
+        "name": "keepalived-serv.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Haproxy in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f haproxy\nExecStartPre=-/usr/bin/docker pull walser/haproxy:latest\nExecStart=/usr/bin/docker run \\\n    -p 8081:8080 \\\n    -p 6444:6443 \\\n    -e LB_HOST=${HOSTNAME} \\\n    --name haproxy \\\n    walser/haproxy:latest\nExecStop=/usr/bin/docker stop haproxy\n\n[Install]\nWantedBy=multi-user.target\n",
         "enable": true,
         "name": "haproxy.service"
+      },
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "gluster.mount"
+      },
+      {
+        "contents": "[Unit]\nDescription=GlusterFS in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f gluster\nExecStartPre=-/usr/bin/docker pull gluster/gluster-centos:latest\nExecStart=/usr/bin/docker run \\\n    -v /etc/glusterfs:/etc/glusterfs:z \\\n    -v /var/lib/glusterd:/var/lib/glusterd:z \\\n    -v /var/log/glusterfs:/var/log/glusterfs:z \\\n    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \\\n    -v /dev/:/dev \\\n    -v /gluster:/gluster \\\n    --privileged=true \\\n    --net=host \\\n    --name gluster \\\n    gluster/gluster-centos:latest\nExecStop=/usr/bin/docker stop gluster\n\n[Install]\nWantedBy=multi-user.target\n\n",
+        "enable": true,
+        "name": "gluster.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Bind9 in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f bind\nExecStartPre=-/usr/bin/docker pull walser/dnssec:latest\nExecStart=/usr/bin/docker run \\\n    -v /etc/domains/yaml:/domains \\\n    -v /etc/domains/keys:/var/bind/keys \\\n    -p 53:53/udp \\\n    -p 53:53/tcp \\\n    -e SALT=7d70b91db47137cd \\\n    --name bind \\\n    walser/dnssec:latest\nExecStop=/usr/bin/docker stop bind\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enable": true,
+        "name": "bind.service"
+      },
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "gluster.mount"
+      },
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "gluster.mount"
+      },
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "gluster.mount"
+      },
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "gluster.mount"
       }
     ]
   }

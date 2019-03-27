@@ -70,10 +70,18 @@
       {
         "mount": {
           "device": "/dev/sdb1",
+          "format": "xfs",
+          "wipe_filesystem": true
+        },
+        "name": "glusterfs"
+      },
+      {
+        "mount": {
+          "device": "/dev/sdc1",
           "format": "ext4",
           "wipe_filesystem": true
         },
-        "name": "gluster"
+        "name": "storageos"
       }
     ]
   },
@@ -97,6 +105,36 @@
         "contents": "[Unit]\nDescription=Haproxy in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f haproxy\nExecStartPre=-/usr/bin/docker pull walser/haproxy:latest\nExecStart=/usr/bin/docker run \\\n    -p 8081:8080 \\\n    -p 6444:6443 \\\n    -e LB_HOST=${HOSTNAME} \\\n    --name haproxy \\\n    walser/haproxy:latest\nExecStop=/usr/bin/docker stop haproxy\n\n[Install]\nWantedBy=multi-user.target\n",
         "enable": true,
         "name": "haproxy.service"
+      },
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "gluster.mount"
+      },
+      {
+        "contents": "[Unit]\nDescription=GlusterFS in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f gluster\nExecStartPre=-/usr/bin/docker pull gluster/gluster-centos:latest\nExecStart=/usr/bin/docker run \\\n    -v /etc/glusterfs:/etc/glusterfs:z \\\n    -v /var/lib/glusterd:/var/lib/glusterd:z \\\n    -v /var/log/glusterfs:/var/log/glusterfs:z \\\n    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \\\n    -v /dev/:/dev \\\n    -v /gluster:/gluster \\\n    --privileged=true \\\n    --net=host \\\n    --name gluster \\\n    gluster/gluster-centos:latest\nExecStop=/usr/bin/docker stop gluster\n\n[Install]\nWantedBy=multi-user.target\n\n",
+        "enable": true,
+        "name": "gluster.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Bind9 in a Container\nAfter=docker.service\nRequires=docker.service\n\n[Service]\nTimeoutStartSec=0\nRestart=always\nUser=claudio\nGroup=claudio\nEnvironmentFile=/etc/env\nExecStartPre=-/usr/bin/docker rm -f bind\nExecStartPre=-/usr/bin/docker pull walser/dnssec:latest\nExecStart=/usr/bin/docker run \\\n    -v /etc/domains/yaml:/domains \\\n    -v /etc/domains/keys:/var/bind/keys \\\n    -p 53:53/udp \\\n    -p 53:53/tcp \\\n    -e SALT=7d70b91db47137cd \\\n    --name bind \\\n    walser/dnssec:latest\nExecStop=/usr/bin/docker stop bind\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enable": true,
+        "name": "bind.service"
+      },
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "gluster.mount"
+      },
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "gluster.mount"
+      },
+      {
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "gluster.mount"
       },
       {
         "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
