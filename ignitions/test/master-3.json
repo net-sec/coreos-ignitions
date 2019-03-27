@@ -122,24 +122,9 @@
         "name": "bind.service"
       },
       {
-        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
+        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdc1\nWhere=/var/lib/storageos\nType=ext4\n[Install]\nWantedBy=local-fs.target\n",
         "enable": true,
-        "name": "gluster.mount"
-      },
-      {
-        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
-        "enable": true,
-        "name": "gluster.mount"
-      },
-      {
-        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
-        "enable": true,
-        "name": "gluster.mount"
-      },
-      {
-        "contents": "[Unit]\nBefore=local-fs.target\n[Mount]\nWhat=/dev/sdb1\nWhere=/gluster\nType=xfs\n[Install]\nWantedBy=local-fs.target\n",
-        "enable": true,
-        "name": "gluster.mount"
+        "name": "var-lib-storageos.mount"
       }
     ]
   }

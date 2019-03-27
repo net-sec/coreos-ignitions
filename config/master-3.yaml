@@ -59,19 +59,7 @@ systemd:
       enable: true
       contents:
         sourceFile: "files/etc/systemd/system/bind.service"
-    - name: gluster.mount
+    - name: var-lib-storageos.mount
       enable: true
       contents:
-        sourceFile: "files/etc/systemd/system/gluster.mount"
-    - name: gluster.mount
-      enable: true
-      contents:
-        sourceFile: "files/etc/systemd/system/gluster.mount"
-    - name: gluster.mount
-      enable: true
-      contents:
-        sourceFile: "files/etc/systemd/system/gluster.mount"
-    - name: gluster.mount
-      enable: true
-      contents:
-        sourceFile: "files/etc/systemd/system/gluster.mount"
+        sourceFile: "files/etc/systemd/system/var-lib-storageos.mount"
