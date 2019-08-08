@@ -6,12 +6,12 @@ defaults:
 
 master-1:
   vip:
-    - address: 10.1.1.20
+    - address: 192.168.43.20
       network: serv
   serv:
     interface: enp0s3
-    address: 10.1.1.21
-    gateway: 10.1.1.1
+    address: 192.168.43.21
+    gateway: 192.168.43.1
   mgmt: 
     interface: enp0s9
     address: 10.20.11.21
@@ -23,12 +23,12 @@ master-1:
 
 master-2:
   vip:
-    - address: 10.1.1.20
+    - address: 192.168.43.20
       network: serv
   serv:
     interface: enp0s3
-    address: 10.1.1.22
-    gateway: 10.1.1.1
+    address: 192.168.43.22
+    gateway: 192.168.43.1
   mgmt: 
     interface: enp0s9
     address: 10.20.11.22
@@ -40,12 +40,12 @@ master-2:
 
 master-3:
   vip:
-    - address: 10.1.1.20
+    - address: 192.168.43.20
       network: serv
   serv:
     interface: enp0s3
-    address: 10.1.1.23
-    gateway: 10.1.1.1
+    address: 192.168.43.23
+    gateway: 192.168.43.1
   mgmt: 
     interface: enp0s9
     address: 10.20.11.23
@@ -59,8 +59,8 @@ master-3:
 agent-1:
   serv:
     interface: enp0s3
-    address: 10.1.1.41
-    gateway: 10.1.1.1
+    address: 192.168.43.41
+    gateway: 192.168.43.1
   mgmt: 
     interface: enp0s9
     address: 10.20.11.41
@@ -73,8 +73,8 @@ agent-1:
 agent-2:
   serv:
     interface: enp0s3
-    address: 10.1.1.42
-    gateway: 10.1.1.1
+    address: 192.168.43.42
+    gateway: 192.168.43.1
   mgmt: 
     interface: enp0s9
     address: 10.20.11.42

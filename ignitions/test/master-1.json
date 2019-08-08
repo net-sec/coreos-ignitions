@@ -5,7 +5,7 @@
   "networkd": {
     "units": [
       {
-        "contents": "[Match] \nName=enp0s3\n\n[Network]\nAddress=192.168.43.21/24\nGateway=192.168.43.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
+        "contents": "[Match] \nName=enp0s3\n\n[Network]\nAddress=10.1.1.21/24\nGateway=10.1.1.1\nDNS=8.8.8.8 DNS=8.8.4.4 ",
         "name": "00-serv.network"
       },
       {
@@ -51,7 +51,7 @@
     "files": [
       {
         "contents": {
-          "inline": "master-1.test.local"
+          "source": "data:,master-1.test.local"
         },
         "filesystem": "root",
         "mode": 420,
@@ -59,7 +59,7 @@
       },
       {
         "contents": {
-          "inline": "HOSTNAME=master-1\nIP_SERV=192.168.43.21\nIP_MGMT=10.20.11.21\nIP_SYNC=10.20.12.21\nSERV_KEEPALIVED_SRC=192.168.43.21\nSERV_KEEPALIVED_ID=1\nSERV_KEEPALIVED_VIP=192.168.43.20\nSERV_KEEPALIVED_INTERFACE=enp0s3\nSERV_KEEPALIVED_PEER_0=192.168.43.22\nSERV_KEEPALIVED_PEER_1=192.168.43.23\n"
+          "source": "data:,HOSTNAME%3Dmaster-1%0AIP_SERV%3D10.1.1.21%0AIP_MGMT%3D10.20.11.21%0AIP_SYNC%3D10.20.12.21%0ASERV_KEEPALIVED_SRC%3D10.1.1.21%0ASERV_KEEPALIVED_ID%3D1%0ASERV_KEEPALIVED_VIP%3D10.1.1.20%0ASERV_KEEPALIVED_INTERFACE%3Denp0s3%0ASERV_KEEPALIVED_PEER_0%3D10.1.1.22%0ASERV_KEEPALIVED_PEER_1%3D10.1.1.23%0A"
         },
         "filesystem": "root",
         "mode": 420,
